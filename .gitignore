@@ -17,6 +17,9 @@ build/
 .env.production
 .env.local
 
+# Personal Claude Code preferences
+CLAUDE.local.md
+
 # Debug and System Logs
 npm-debug.log*
 yarn-debug.log*
