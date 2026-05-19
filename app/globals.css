@@ -1,0 +1,188 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* ── Copper Sapphire Morning ── */
+  --color-copper:         #8A4826;   /* deep copper */
+  --color-amber:          #A46726;   /* warm amber */
+  --color-blush:          #D8B4A9;   /* dusty blush */
+  --color-sapphire:       #54709C;   /* muted sapphire */
+  --color-terra:          #CC5C44;   /* terracotta */
+  --color-olive:          #3C3C24;   /* dark olive */
+
+  /* ── Semantic aliases — keeps all existing utility classes working ── */
+  --color-burgundy:       #8A4826;   /* copper as primary CTA */
+  --color-burgundy-mid:   #A46726;   /* amber */
+  --color-burgundy-light: #F2E3D8;   /* warm cream tint */
+  --color-charcoal:       #3C3C24;   /* olive as body text */
+  --color-warmgray:       #78706A;
+  --color-state-blue:     #54709C;   /* sapphire */
+  --color-alert-orange:   #CC5C44;   /* terra */
+}
+
+/* ── Base resets ──────────────────────────── */
+
+*, *::before, *::after {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
+}
+
+html { scroll-behavior: smooth; height: 100%; }
+
+body {
+  overscroll-behavior: none;
+  height: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+::-webkit-scrollbar { width: 0; height: 0; }
+
+/* ── Ambient background ────────────────── */
+
+.app-background {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.app-background::before {
+  content: '';
+  position: absolute;
+  top: -25%;
+  right: -20%;
+  width: 75vw;
+  height: 75vw;
+  border-radius: 50%;
+  /* copper + terra warm blob */
+  background: radial-gradient(circle,
+    rgba(204, 92, 68, 0.22) 0%,
+    rgba(138, 72, 38, 0.14) 40%,
+    transparent 70%);
+}
+
+.app-background::after {
+  content: '';
+  position: absolute;
+  bottom: -20%;
+  left: -20%;
+  width: 65vw;
+  height: 65vw;
+  border-radius: 50%;
+  /* sapphire + blush cool blob */
+  background: radial-gradient(circle,
+    rgba(84, 112, 156, 0.18) 0%,
+    rgba(216, 180, 169, 0.12) 45%,
+    transparent 70%);
+}
+
+.app-background-base {
+  position: absolute;
+  inset: 0;
+  background: #FAF7F5;
+  transition: background 0.4s ease;
+}
+
+.dark .app-background::before {
+  background: radial-gradient(circle,
+    rgba(204, 92, 68, 0.14) 0%,
+    rgba(138, 72, 38, 0.08) 40%,
+    transparent 70%);
+}
+
+.dark .app-background::after {
+  background: radial-gradient(circle,
+    rgba(84, 112, 156, 0.13) 0%,
+    rgba(216, 180, 169, 0.06) 45%,
+    transparent 70%);
+}
+
+.dark .app-background-base {
+  background: #0E0B09;
+}
+
+/* ── Glass utilities ────────────────────── */
+
+.glass {
+  background: rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.42),
+    0 4px 24px rgba(0, 0, 0, 0.04),
+    0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.dark .glass {
+  background: rgba(16, 12, 9, 0.38);
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 4px 24px rgba(0, 0, 0, 0.32),
+    0 1px 3px rgba(0, 0, 0, 0.21);
+}
+
+.glass-strong {
+  background: rgba(255, 255, 255, 0.50);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.43);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.64),
+    0 8px 40px rgba(0, 0, 0, 0.06),
+    0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.dark .glass-strong {
+  background: rgba(20, 15, 11, 0.57);
+  border-color: rgba(255, 255, 255, 0.09);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 8px 40px rgba(0, 0, 0, 0.39),
+    0 2px 8px rgba(0, 0, 0, 0.28);
+}
+
+/* ── Progress bar ─────────────────────── */
+
+@keyframes progressExpand {
+  from { width: 0 !important; }
+}
+
+.progress-bar-fill {
+  animation: progressExpand 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ── Page enter ───────────────────────── */
+/* NOTE: no transform here — transform on an ancestor breaks position:fixed
+   for children (BottomNav). Opacity-only keeps the nav anchored. */
+
+@keyframes pageEnter {
+  from { opacity: 0; }
+}
+
+.page-enter {
+  animation: pageEnter 0.3s ease both;
+}
+
+/* ── Bottom sheet slide-up ────────────── */
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+}
+
+.sheet-enter {
+  animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ── Bottom nav padding ───────────────── */
+
+.pb-nav {
+  padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+}
