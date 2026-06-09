@@ -3,11 +3,12 @@
 import { useRouter } from 'next/navigation';
 import { ChevronLeft, Moon, Sun } from 'lucide-react';
 import { useTheme } from '@/components/providers/ThemeProvider';
+import LiquidGlass from '@/components/LiquidGlass';
 
 interface Props {
-  title: string;
-  back?: boolean;
-  right?: React.ReactNode;
+  title:            string;
+  back?:            boolean;
+  right?:           React.ReactNode;
   showThemeToggle?: boolean;
 }
 
@@ -20,7 +21,15 @@ export default function PageHeader({ title, back, right, showThemeToggle }: Prop
       className="sticky top-0 z-40 pb-3 px-4"
       style={{ paddingTop: 'max(12px, env(safe-area-inset-top, 12px))' }}
     >
-      <div className="glass-strong rounded-full flex items-center justify-between h-12 px-4 shadow-sm">
+      <LiquidGlass
+        radius={999}
+        blur={36}
+        saturate={220}
+        scale={7}
+        strength={0.24}
+        contentClassName="flex items-center justify-between h-12 px-4 w-full"
+        className="w-full shadow-sm"
+      >
         {back ? (
           <button
             onClick={() => router.back()}
@@ -49,13 +58,13 @@ export default function PageHeader({ title, back, right, showThemeToggle }: Prop
               aria-label="Toggle dark mode"
             >
               {theme === 'dark'
-                ? <Sun size={18} strokeWidth={1.75} />
+                ? <Sun  size={18} strokeWidth={1.75} />
                 : <Moon size={18} strokeWidth={1.75} />
               }
             </button>
           )}
         </div>
-      </div>
+      </LiquidGlass>
     </header>
   );
 }
