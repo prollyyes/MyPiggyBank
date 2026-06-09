@@ -1,4 +1,4 @@
-const CACHE = 'mpb-shell-v1';
+const CACHE = 'mpb-shell-v2';
 const SHELL = [
   '/',
   '/charts',
@@ -30,11 +30,17 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
-  // Skip non-same-origin and Next.js internals
   if (url.origin !== location.origin) return;
   if (url.pathname.startsWith('/_next/')) return;
 
+  // Network-first strategy for HTML pages and local assets
   e.respondWith(
-    caches.match(e.request).then((hit) => hit || fetch(e.request))
+    fetch(e.request)
+      .then((res) => {
+        const resClone = res.clone();
+        caches.open(CACHE).then((cache) => cache.put(e.request, resClone));
+        return res;
+      })
+      .catch(() => caches.match(e.request))
   );
 });
