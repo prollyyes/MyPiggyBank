@@ -25,8 +25,6 @@ export default function PageHeader({ title, back, right, showThemeToggle }: Prop
         radius={999}
         blur={36}
         saturate={220}
-        scale={7}
-        strength={0.24}
         contentClassName="flex items-center justify-between h-12 px-4 w-full"
         className="w-full shadow-sm"
       >

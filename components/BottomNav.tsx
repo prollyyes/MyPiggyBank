@@ -25,8 +25,6 @@ export default function BottomNav() {
         radius={999}
         blur={32}
         saturate={220}
-        scale={8}
-        strength={0.26}
         contentClassName="flex items-center gap-1 px-3 py-2"
         style={{ boxShadow: '0 4px 32px rgba(0,0,0,0.18)' }}
       >
