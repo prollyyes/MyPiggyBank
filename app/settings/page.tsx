@@ -13,7 +13,7 @@ import LiquidGlassSwitch from '@/components/LiquidGlassSwitch';
 
 export default function SettingsPage() {
   const router = useRouter();
-  const { theme, toggle } = useTheme();
+  const { theme, toggle, colorPalette, setPalette } = useTheme();
   const [settings, setSettings] = useState<Settings>(storage.getSettings());
   const [showClear, setShowClear] = useState(false);
 
@@ -90,10 +90,36 @@ export default function SettingsPage() {
           <h2 className="text-xs font-semibold uppercase tracking-wider text-warmgray dark:text-neutral-400 px-1 mb-2">
             Appearance
           </h2>
-          <div className="glass rounded-3xl overflow-hidden">
+          <div className="glass rounded-3xl overflow-hidden divide-y divide-black/5 dark:divide-white/5">
             <div className="w-full h-14 px-4 flex items-center justify-between">
               <span className="text-sm font-medium">Dark mode</span>
               <LiquidGlassSwitch checked={theme === 'dark'} onChange={toggle} />
+            </div>
+            <div className="p-4 space-y-3">
+              <span className="text-sm font-medium block">Color Palette</span>
+              <div className="flex gap-2">
+                {[
+                  { id: 'amalfi', name: 'Amalfi', colors: ['bg-[#8A4826]', 'bg-[#FAD02C]'] },
+                  { id: 'santorini', name: 'Santorini', colors: ['bg-[#005A9C]', 'bg-[#00A8E8]'] },
+                  { id: 'tuscany', name: 'Tuscany', colors: ['bg-[#4A5D23]', 'bg-[#D4AF37]'] },
+                ].map(p => (
+                  <button
+                    key={p.id}
+                    onClick={() => setPalette(p.id as any)}
+                    className={`flex-1 flex flex-col items-center gap-2 p-2 rounded-2xl border-2 transition-colors duration-200
+                      ${colorPalette === p.id 
+                        ? 'border-burgundy bg-burgundy/5 dark:bg-burgundy/20' 
+                        : 'border-transparent active:bg-black/5 dark:active:bg-white/5'
+                      }`}
+                  >
+                    <div className="flex -space-x-2">
+                      <div className={`w-6 h-6 rounded-full border border-white/20 shadow-sm ${p.colors[0]}`} />
+                      <div className={`w-6 h-6 rounded-full border border-white/20 shadow-sm ${p.colors[1]}`} />
+                    </div>
+                    <span className="text-xs font-medium text-warmgray dark:text-neutral-300">{p.name}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </section>

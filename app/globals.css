@@ -5,21 +5,58 @@
 @theme {
   --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
-  /* ── Copper Sapphire Morning ── */
-  --color-copper:         #8A4826;
-  --color-amber:          #A46726;
-  --color-blush:          #D8B4A9;
-  --color-sapphire:       #54709C;
-  --color-terra:          #CC5C44;
-  --color-olive:          #3C3C24;
+  --color-burgundy:       var(--theme-primary);
+  --color-burgundy-mid:   var(--theme-secondary);
+  --color-burgundy-light: var(--theme-surface);
+  --color-charcoal:       var(--theme-text);
+  --color-warmgray:       var(--theme-text-muted);
+  --color-state-blue:     var(--theme-accent);
+  --color-alert-orange:   var(--theme-alert);
+  --color-amber:          var(--theme-highlight);
+  --color-copper:         var(--theme-primary);
+  --color-blush:          var(--theme-surface);
+  --color-sapphire:       var(--theme-accent);
+  --color-terra:          var(--theme-alert);
+  --color-olive:          var(--theme-text);
+}
 
-  --color-burgundy:       #8A4826;
-  --color-burgundy-mid:   #A46726;
-  --color-burgundy-light: #F2E3D8;
-  --color-charcoal:       #3C3C24;
-  --color-warmgray:       #78706A;
-  --color-state-blue:     #54709C;
-  --color-alert-orange:   #CC5C44;
+:root, .theme-amalfi {
+  --theme-primary: #8A4826; /* Copper */
+  --theme-secondary: #D4A373; 
+  --theme-surface: #F2E3D8;
+  --theme-text: #3C3C24;
+  --theme-text-muted: #78706A;
+  --theme-accent: #54709C; /* Sapphire */
+  --theme-alert: #CC5C44;
+  --theme-highlight: #FAD02C; /* Lemon Yellow */
+  --glass-tint-light: rgba(18, 52, 80, 0.11);
+  --glass-tint-dark: rgba(215, 200, 190, 0.08);
+}
+
+.theme-santorini {
+  --theme-primary: #005A9C; /* Aegean Blue */
+  --theme-secondary: #00A8E8; /* Cyan */
+  --theme-surface: #E3F2FD;
+  --theme-text: #1C2833;
+  --theme-text-muted: #5D6D7E;
+  --theme-accent: #E67E22; /* Warm Orange */
+  --theme-alert: #E74C3C;
+  --theme-highlight: #F1C40F; /* Sun Yellow */
+  --glass-tint-light: rgba(230, 126, 34, 0.08);
+  --glass-tint-dark: rgba(230, 126, 34, 0.06);
+}
+
+.theme-tuscany {
+  --theme-primary: #4A5D23; /* Olive Green */
+  --theme-secondary: #879F84; /* Sage */
+  --theme-surface: #E8F0E6;
+  --theme-text: #2C3E2D;
+  --theme-text-muted: #6B7B6B;
+  --theme-accent: #8A4826; /* Terracotta */
+  --theme-alert: #D35400;
+  --theme-highlight: #D4AF37; /* Muted Gold */
+  --glass-tint-light: rgba(138, 72, 38, 0.08);
+  --glass-tint-dark: rgba(138, 72, 38, 0.06);
 }
 
 /* ── Base resets ──────────────────────────── */
@@ -138,10 +175,10 @@ body {
       rgba(255, 255, 255, 0.08) 30%,
       transparent 55%
     ),
-    /* Tinted layer — deep blue-slate (complementary to copper) */
+    /* Tinted layer (driven by theme) */
     linear-gradient(
       150deg,
-      rgba(18, 52, 80, 0.11) 0%,
+      var(--glass-tint-light) 0%,
       transparent 62%
     ),
     /* Base frosted fill */
@@ -167,10 +204,10 @@ body {
       rgba(255, 255, 255, 0.02) 30%,
       transparent 55%
     ),
-    /* Warm light cream-gray tint */
+    /* Tinted layer (driven by theme) */
     linear-gradient(
       150deg,
-      rgba(215, 200, 190, 0.08) 0%,
+      var(--glass-tint-dark) 0%,
       transparent 62%
     ),
     /* Dark base */
@@ -198,10 +235,10 @@ body {
       transparent 52%,
       rgba(255, 255, 255, 0.05) 100%
     ),
-    /* Deep blue-slate tint — complementary to copper */
+    /* Tinted layer (driven by theme) */
     linear-gradient(
       150deg,
-      rgba(18, 52, 80, 0.13) 0%,
+      var(--glass-tint-light) 0%,
       transparent 58%
     ),
     /* Light frosted base */
@@ -229,10 +266,10 @@ body {
       rgba(255, 255, 255, 0.04) 30%,
       transparent 55%
     ),
-    /* Warm light cream-gray tint */
+    /* Tinted layer (driven by theme) */
     linear-gradient(
       150deg,
-      rgba(215, 200, 190, 0.10) 0%,
+      var(--glass-tint-dark) 0%,
       transparent 58%
     ),
     /* Deep dark base */

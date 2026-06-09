@@ -38,6 +38,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           try {
             var s = JSON.parse(localStorage.getItem('mpb.settings') || '{}');
             if (s.theme === 'dark') document.documentElement.classList.add('dark');
+            var p = s.colorPalette || 'amalfi';
+            document.documentElement.classList.add('theme-' + p);
           } catch(e) {}
         `}} />
         {/* Capture beforeinstallprompt early — before React hydrates */}

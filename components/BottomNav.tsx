@@ -18,9 +18,22 @@ export default function BottomNav() {
 
   return (
     <nav
-      className="fixed left-1/2 -translate-x-1/2 z-50"
+      className="fixed left-1/2 -translate-x-1/2 z-50 flex justify-center"
       style={{ bottom: 'calc(1.25rem + env(safe-area-inset-bottom, 0px))' }}
     >
+      <Link
+        href="/entries/new"
+        className="
+          absolute -top-6 left-1/2 -translate-x-1/2 z-10
+          flex h-14 w-14 items-center justify-center rounded-full
+          bg-burgundy text-white shadow-xl shadow-burgundy/40
+          active:scale-[0.90] transition-all duration-200 ease-out select-none
+        "
+        aria-label="Add entry"
+      >
+        <Plus size={24} strokeWidth={2.5} />
+      </Link>
+
       <LiquidGlass
         radius={999}
         blur={32}
@@ -30,20 +43,8 @@ export default function BottomNav() {
       >
         {TABS.map((tab) => {
           if (!tab.Icon) {
-            return (
-              <Link
-                key="fab"
-                href={tab.href}
-                className="
-                  -mt-5 mx-1 flex h-14 w-14 items-center justify-center rounded-full
-                  bg-burgundy text-white shadow-lg shadow-burgundy/40
-                  active:scale-[0.90] transition-all duration-200 ease-out select-none
-                "
-                aria-label="Add entry"
-              >
-                <Plus size={24} strokeWidth={2.5} />
-              </Link>
-            );
+            // Spacer for the floating FAB
+            return <div key="fab-spacer" className="w-14" aria-hidden="true" />;
           }
 
           const isActive = tab.href === '/'

@@ -11,6 +11,7 @@ export const DEFAULT_SETTINGS: Settings = {
   primaryCurrency: 'EUR',
   managedCurrencies: [],
   theme: 'light',
+  colorPalette: 'amalfi',
   onboardingComplete: false,
   name: '',
   monthlyBudget: 0,

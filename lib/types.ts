@@ -41,6 +41,7 @@ export interface Settings {
   primaryCurrency: CurrencyCode;
   managedCurrencies: CurrencyCode[];
   theme: Theme;
+  colorPalette: 'amalfi' | 'santorini' | 'tuscany';
   onboardingComplete: boolean;
   name: string;
   monthlyBudget: number;
