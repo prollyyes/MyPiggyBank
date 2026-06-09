@@ -35,7 +35,7 @@ export default function CurrencySettings() {
   }
 
   return (
-    <div className="page-enter pb-nav min-h-screen">
+    <div className="page-enter pb-nav min-h-full">
       <PageHeader title="Currency" back />
 
       <main className="px-4 space-y-3">

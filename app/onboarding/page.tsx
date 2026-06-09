@@ -61,7 +61,7 @@ export default function Onboarding() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col px-6 pt-16 pb-10">
+    <div className="min-h-full flex flex-col px-6 pt-16 pb-10">
       {/* Step dots */}
       <div className="flex justify-center gap-2 mb-10">
         {STEPS.map((_, i) => (

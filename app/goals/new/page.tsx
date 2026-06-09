@@ -62,7 +62,7 @@ export default function NewGoal() {
   }
 
   return (
-    <div className="page-enter pb-nav min-h-screen">
+    <div className="page-enter pb-nav min-h-full">
       <PageHeader title="New Goal" back />
 
       <main className="px-4 pt-2">

@@ -40,7 +40,7 @@ export default function AlertsPage() {
   const goalMap = Object.fromEntries(goals.map(g => [g.id, g]));
 
   return (
-    <div className="page-enter pb-nav min-h-screen">
+    <div className="page-enter pb-nav min-h-full">
       <PageHeader title="Alerts" right={
         alerts.length > 0 ? (
           <button
@@ -52,7 +52,7 @@ export default function AlertsPage() {
         ) : undefined
       } />
 
-      <main className="px-4 space-y-3">
+      <main className="px-4 space-y-3 card-enter">
         {alerts.length === 0 ? (
           <div className="glass rounded-3xl p-8 text-center mt-4">
             <p className="text-4xl mb-3">✅</p>

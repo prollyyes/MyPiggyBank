@@ -143,7 +143,7 @@ export default function Dashboard() {
 
   // Skeleton while loading
   if (!ready) return (
-    <div className="pb-nav min-h-screen">
+    <div className="pb-nav min-h-full">
       <PageHeader title="MyPiggyBank" showThemeToggle />
       <main className="px-4 space-y-5">
         <div className="h-4 w-28 rounded-full bg-black/6 dark:bg-white/8 animate-pulse" />
@@ -181,7 +181,7 @@ export default function Dashboard() {
   const savePct = totalIncome > 0 ? Math.min(100 - expPct, (totalSavedMonth / totalIncome) * 100) : 0;
 
   return (
-    <div className="page-enter pb-nav min-h-screen">
+    <div className="page-enter pb-nav min-h-full">
       <PageHeader
         title="MyPiggyBank"
         showThemeToggle

@@ -1,11 +1,20 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
+import InstallPrompt from '@/components/InstallPrompt';
 
 export const metadata: Metadata = {
   title: 'MyPiggyBank',
   description: 'Your personal savings companion',
   manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'MyPiggyBank',
+  },
+  icons: {
+    apple: '/icons/icon.svg',
+  },
 };
 
 export const viewport: Viewport = {
@@ -13,9 +22,10 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
+  viewportFit: 'cover',
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#FAFAF8' },
-    { media: '(prefers-color-scheme: dark)',  color: '#0f0f0f' },
+    { media: '(prefers-color-scheme: light)', color: '#FAF7F5' },
+    { media: '(prefers-color-scheme: dark)',  color: '#0E0B09' },
   ],
 };
 
@@ -30,18 +40,32 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             if (s.theme === 'dark') document.documentElement.classList.add('dark');
           } catch(e) {}
         `}} />
+        {/* Register service worker */}
+        <script dangerouslySetInnerHTML={{ __html: `
+          if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+              navigator.serviceWorker.register('/sw.js').catch(function() {});
+            });
+          }
+        `}} />
       </head>
       <body className="font-sans text-charcoal dark:text-neutral-100 antialiased">
-        {/* Ambient background */}
+        {/* Fixed ambient background — always behind everything */}
         <div className="app-background">
           <div className="app-background-base" />
         </div>
 
-        <ThemeProvider>
-          <div className="relative min-h-screen max-w-md mx-auto">
+        {/* Scroll root — the only scrollable container. body is position:fixed
+            to eliminate iOS rubber-band overscroll. */}
+        <div
+          id="scroll-root"
+          className="relative max-w-md mx-auto"
+        >
+          <ThemeProvider>
             {children}
-          </div>
-        </ThemeProvider>
+            <InstallPrompt />
+          </ThemeProvider>
+        </div>
       </body>
     </html>
   );

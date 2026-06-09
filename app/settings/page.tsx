@@ -35,7 +35,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="page-enter pb-nav min-h-screen">
+    <div className="page-enter pb-nav min-h-full">
       <PageHeader title="Settings" showThemeToggle />
 
       <main className="px-4 space-y-5">

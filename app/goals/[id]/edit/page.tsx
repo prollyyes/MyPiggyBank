@@ -105,12 +105,12 @@ export default function EditGoal() {
     router.replace('/');
   }
 
-  if (!goal) return <div className="min-h-screen" />;
+  if (!goal) return <div className="min-h-full" />;
 
   const canSave = name.trim().length > 0 && parseFloat(target) > 0 && deadline !== '';
 
   return (
-    <div className="page-enter pb-nav min-h-screen">
+    <div className="page-enter pb-nav min-h-full">
       <PageHeader title="Edit Goal" back />
 
       <main className="px-4 pt-2 space-y-4">

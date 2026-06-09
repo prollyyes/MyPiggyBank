@@ -25,13 +25,13 @@ function SavedContent() {
     setGoal(g);
   }, [goalId, router]);
 
-  if (!goal) return <div className="min-h-screen" />;
+  if (!goal) return <div className="min-h-full" />;
 
   const progress = pct(goal.currentAmount, goal.targetAmount);
   const remaining = goal.targetAmount - goal.currentAmount;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6 pb-10 pt-16">
+    <div className="min-h-full flex flex-col items-center justify-center px-6 pb-10 pt-16">
       {/* Confetti-style success icon */}
       <div className="w-20 h-20 rounded-full bg-burgundy/10 flex items-center justify-center mb-6">
         <span className="text-4xl">🎉</span>
@@ -111,7 +111,7 @@ function SavedContent() {
 
 export default function EntrySaved() {
   return (
-    <Suspense fallback={<div className="min-h-screen" />}>
+    <Suspense fallback={<div className="min-h-full" />}>
       <SavedContent />
     </Suspense>
   );

@@ -6,21 +6,20 @@
   --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
   /* ── Copper Sapphire Morning ── */
-  --color-copper:         #8A4826;   /* deep copper */
-  --color-amber:          #A46726;   /* warm amber */
-  --color-blush:          #D8B4A9;   /* dusty blush */
-  --color-sapphire:       #54709C;   /* muted sapphire */
-  --color-terra:          #CC5C44;   /* terracotta */
-  --color-olive:          #3C3C24;   /* dark olive */
+  --color-copper:         #8A4826;
+  --color-amber:          #A46726;
+  --color-blush:          #D8B4A9;
+  --color-sapphire:       #54709C;
+  --color-terra:          #CC5C44;
+  --color-olive:          #3C3C24;
 
-  /* ── Semantic aliases — keeps all existing utility classes working ── */
-  --color-burgundy:       #8A4826;   /* copper as primary CTA */
-  --color-burgundy-mid:   #A46726;   /* amber */
-  --color-burgundy-light: #F2E3D8;   /* warm cream tint */
-  --color-charcoal:       #3C3C24;   /* olive as body text */
+  --color-burgundy:       #8A4826;
+  --color-burgundy-mid:   #A46726;
+  --color-burgundy-light: #F2E3D8;
+  --color-charcoal:       #3C3C24;
   --color-warmgray:       #78706A;
-  --color-state-blue:     #54709C;   /* sapphire */
-  --color-alert-orange:   #CC5C44;   /* terra */
+  --color-state-blue:     #54709C;
+  --color-alert-orange:   #CC5C44;
 }
 
 /* ── Base resets ──────────────────────────── */
@@ -32,11 +31,28 @@
   box-sizing: border-box;
 }
 
-html { scroll-behavior: smooth; height: 100%; }
+/* ── Viewport lock — kills iOS rubber-band overscroll ── */
+html {
+  height: 100%;
+  overflow: hidden;
+}
 
 body {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
   overscroll-behavior: none;
-  height: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* The actual scroll container lives in layout.tsx (#scroll-root) */
+#scroll-root {
+  height: 100dvh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: none;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -60,7 +76,6 @@ body {
   width: 75vw;
   height: 75vw;
   border-radius: 50%;
-  /* copper + terra warm blob */
   background: radial-gradient(circle,
     rgba(204, 92, 68, 0.22) 0%,
     rgba(138, 72, 38, 0.14) 40%,
@@ -75,7 +90,6 @@ body {
   width: 65vw;
   height: 65vw;
   border-radius: 50%;
-  /* sapphire + blush cool blob */
   background: radial-gradient(circle,
     rgba(84, 112, 156, 0.18) 0%,
     rgba(216, 180, 169, 0.12) 45%,
@@ -107,46 +121,128 @@ body {
   background: #0E0B09;
 }
 
-/* ── Glass utilities ────────────────────── */
+/* ── Glass utilities ────────────────────────────────────────
+   .glass        — base frosted layer (small elements, pills, inputs)
+   .glass-strong — full liquid glass (BottomNav, PageHeader, sheets)
+   Both upgraded with specular rim + refraction sweep (::before)
+   using isolation + z-index:-1 so children always paint above.
+──────────────────────────────────────────────────────────── */
 
 .glass {
-  background: rgba(255, 255, 255, 0.09);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.20);
+  position: relative;
+  isolation: isolate;
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(32px) saturate(200%) brightness(106%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%) brightness(106%);
+  border: 1px solid rgba(255, 255, 255, 0.30);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.42),
-    0 4px 24px rgba(0, 0, 0, 0.04),
-    0 1px 3px rgba(0, 0, 0, 0.03);
+    0 4px 24px rgba(0, 0, 0, 0.06),
+    0 1px 4px rgba(0, 0, 0, 0.04),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.62),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05),
+    0 2px 16px rgba(138, 72, 38, 0.06);
+}
+
+.glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0.07) 35%,
+    transparent 60%
+  );
+  pointer-events: none;
+  z-index: -1;
 }
 
 .dark .glass {
-  background: rgba(16, 12, 9, 0.38);
-  border-color: rgba(255, 255, 255, 0.06);
+  background: rgba(18, 12, 8, 0.50);
+  border-color: rgba(255, 255, 255, 0.09);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.04),
-    0 4px 24px rgba(0, 0, 0, 0.32),
-    0 1px 3px rgba(0, 0, 0, 0.21);
+    0 4px 24px rgba(0, 0, 0, 0.40),
+    0 1px 4px rgba(0, 0, 0, 0.25),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.10),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.28),
+    0 2px 16px rgba(204, 92, 68, 0.05);
+  backdrop-filter: blur(32px) saturate(170%) brightness(92%);
+  -webkit-backdrop-filter: blur(32px) saturate(170%) brightness(92%);
 }
 
+.dark .glass::before {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0.02) 35%,
+    transparent 60%
+  );
+}
+
+/* ── Full liquid glass — BottomNav, PageHeader, sheets ── */
+
 .glass-strong {
-  background: rgba(255, 255, 255, 0.50);
-  backdrop-filter: blur(40px) saturate(200%);
-  -webkit-backdrop-filter: blur(40px) saturate(200%);
-  border: 1px solid rgba(255, 255, 255, 0.43);
+  position: relative;
+  isolation: isolate;
+  background: rgba(255, 255, 255, 0.52);
+  backdrop-filter: blur(52px) saturate(230%) brightness(110%);
+  -webkit-backdrop-filter: blur(52px) saturate(230%) brightness(110%);
+  border: 1.5px solid rgba(255, 255, 255, 0.42);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.64),
-    0 8px 40px rgba(0, 0, 0, 0.06),
-    0 2px 8px rgba(0, 0, 0, 0.04);
+    /* Outer ambient glow picks up copper blob */
+    0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 8px 48px rgba(0, 0, 0, 0.10),
+    0 2px 8px rgba(0, 0, 0, 0.06),
+    /* Strong specular top rim */
+    inset 0 2.5px 0 rgba(255, 255, 255, 0.82),
+    /* Depth shadow bottom */
+    inset 0 -1.5px 0 rgba(0, 0, 0, 0.08),
+    /* Left rim specular */
+    inset 1.5px 0 0 rgba(255, 255, 255, 0.28),
+    /* Warm copper ambient glow */
+    0 4px 32px rgba(138, 72, 38, 0.08);
+}
+
+/* Refraction / specular sweep — diagonal highlight */
+.glass-strong::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    130deg,
+    rgba(255, 255, 255, 0.36) 0%,
+    rgba(255, 255, 255, 0.14) 28%,
+    transparent 52%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+  pointer-events: none;
+  z-index: -1;
 }
 
 .dark .glass-strong {
-  background: rgba(20, 15, 11, 0.57);
-  border-color: rgba(255, 255, 255, 0.09);
+  background: rgba(14, 9, 5, 0.60);
+  border-color: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(52px) saturate(190%) brightness(92%);
+  -webkit-backdrop-filter: blur(52px) saturate(190%) brightness(92%);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 8px 40px rgba(0, 0, 0, 0.39),
-    0 2px 8px rgba(0, 0, 0, 0.28);
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 8px 48px rgba(0, 0, 0, 0.52),
+    0 2px 8px rgba(0, 0, 0, 0.36),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1.5px 0 rgba(0, 0, 0, 0.34),
+    inset 1.5px 0 0 rgba(255, 255, 255, 0.07),
+    0 4px 32px rgba(204, 92, 68, 0.06);
+}
+
+.dark .glass-strong::before {
+  background: linear-gradient(
+    130deg,
+    rgba(255, 255, 255, 0.09) 0%,
+    rgba(255, 255, 255, 0.04) 30%,
+    transparent 55%
+  );
 }
 
 /* ── Progress bar ─────────────────────── */
@@ -159,16 +255,39 @@ body {
   animation: progressExpand 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* ── Page enter ───────────────────────── */
-/* NOTE: no transform here — transform on an ancestor breaks position:fixed
-   for children (BottomNav). Opacity-only keeps the nav anchored. */
+/* ── Page enter — opacity only (transform breaks position:fixed BottomNav) ── */
 
 @keyframes pageEnter {
   from { opacity: 0; }
 }
 
 .page-enter {
-  animation: pageEnter 0.3s ease both;
+  animation: pageEnter 0.28s ease both;
+}
+
+/* ── Cards enter — safe to use transform (no fixed children) ── */
+
+@keyframes cardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.card-enter {
+  animation: cardEnter 0.36s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ── Install prompt slide-down ── */
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-16px);
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+  }
 }
 
 /* ── Bottom sheet slide-up ────────────── */

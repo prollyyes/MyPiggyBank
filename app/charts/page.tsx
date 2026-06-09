@@ -70,15 +70,15 @@ export default function ChartsPage() {
 
   const fmtTooltip = (value: unknown) => fmt(Number(value), cur);
 
-  if (!ready) return <div className="min-h-screen" />;
+  if (!ready) return <div className="min-h-full" />;
 
   return (
-    <div className="page-enter pb-nav min-h-screen">
+    <div className="page-enter pb-nav min-h-full">
       <PageHeader title="Charts" showThemeToggle />
 
       <main className="px-4 space-y-5">
         {/* Tab pills */}
-        <div className="glass rounded-full p-1 flex">
+        <div className="glass-strong rounded-full p-1 flex">
           {TABS.map(t => (
             <button key={t} onClick={() => setTab(t)}
               className={`flex-1 h-9 rounded-full text-xs font-semibold

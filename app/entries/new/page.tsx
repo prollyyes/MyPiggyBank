@@ -93,7 +93,7 @@ export default function NewEntry() {
   const activeTab = TABS.find(t => t.type === type)!;
 
   return (
-    <div className="page-enter pb-nav min-h-screen">
+    <div className="page-enter pb-nav min-h-full">
       <PageHeader title="Add Entry" back />
 
       <main className="px-4 pt-2 space-y-4">
