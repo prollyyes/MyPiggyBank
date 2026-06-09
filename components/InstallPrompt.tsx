@@ -176,7 +176,16 @@ export default function InstallPrompt() {
       role="banner"
       aria-label="Install app"
     >
-      <div className="glass-strong rounded-3xl overflow-hidden shadow-2xl shadow-black/20">
+      <div
+        className="rounded-3xl overflow-hidden shadow-2xl shadow-black/25"
+        style={{
+          background: 'rgba(250,247,245,0.92)',
+          backdropFilter: 'blur(40px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+          border: '1px solid rgba(255,255,255,0.6)',
+          boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.9), 0 16px 48px rgba(0,0,0,0.18)',
+        }}
+      >
         {/* Header row */}
         <div className="flex items-center gap-3 p-4">
           <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 shadow-sm">

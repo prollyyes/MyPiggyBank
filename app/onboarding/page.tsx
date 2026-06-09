@@ -74,7 +74,7 @@ export default function Onboarding() {
       {/* ── Step 0: Welcome ── */}
       {step === 0 && (
         <div className="flex-1 flex flex-col">
-          <p className="text-4xl mb-4">🐷</p>
+          <img src="/icons/icon.svg" alt="MyPiggyBank" className="w-16 h-16 rounded-2xl shadow-lg mx-auto mb-4" />
           <h1 className="text-3xl font-bold mb-2 tracking-tight">Welcome to<br/>MyPiggyBank</h1>
           <p className="text-warmgray dark:text-neutral-400 mb-8">
             Your personal savings companion. Let's get you set up in just a minute.

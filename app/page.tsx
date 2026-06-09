@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Bell, GripVertical, Pencil, PiggyBank } from 'lucide-react';
+import { Bell, GripVertical, Pencil } from 'lucide-react';
 import BottomNav from '@/components/BottomNav';
 import PageHeader from '@/components/PageHeader';
 import { storage } from '@/lib/storage';
@@ -491,9 +491,8 @@ function GoalCard({
 function EmptyGoals() {
   return (
     <div className="glass rounded-3xl p-8 text-center">
-      <div className="w-14 h-14 rounded-2xl glass flex items-center justify-center mx-auto mb-4
-        text-warmgray dark:text-neutral-400">
-        <PiggyBank size={28} strokeWidth={1.5} />
+      <div className="w-14 h-14 mx-auto mb-4">
+        <img src="/icons/icon.svg" alt="MyPiggyBank" className="w-full h-full rounded-2xl shadow-sm" />
       </div>
       <p className="font-semibold mb-1">No goals yet</p>
       <p className="text-sm text-warmgray dark:text-neutral-400 mb-5">
