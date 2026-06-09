@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
+import { useTheme } from '@/components/providers/ThemeProvider';
+import LiquidGlass from '@/components/LiquidGlass';
 
 const DISMISSED_KEY = 'mpb.install-dismissed';
 
@@ -113,6 +115,7 @@ function getInstructions(info: BrowserInfo): { title: string; steps: Step[] } | 
 }
 
 export default function InstallPrompt() {
+  const { theme } = useTheme();
   const [info, setInfo]               = useState<BrowserInfo | null>(null);
   const [show, setShow]               = useState(false);
   const [expanded, setExpanded]       = useState(false);
@@ -176,25 +179,28 @@ export default function InstallPrompt() {
       role="banner"
       aria-label="Install app"
     >
-      <div
-        className="rounded-3xl overflow-hidden shadow-2xl shadow-black/25"
+      <LiquidGlass
+        radius={24}
+        blur={40}
+        saturate={180}
         style={{
-          background: 'rgba(250,247,245,0.92)',
-          backdropFilter: 'blur(40px) saturate(180%)',
-          WebkitBackdropFilter: 'blur(40px) saturate(180%)',
-          border: '1px solid rgba(255,255,255,0.6)',
-          boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.9), 0 16px 48px rgba(0,0,0,0.18)',
+          boxShadow: theme === 'dark'
+            ? '0 16px 48px rgba(0,0,0,0.52)'
+            : '0 16px 48px rgba(0,0,0,0.18)',
+          background: theme === 'dark'
+            ? 'rgba(24,20,18,0.88)'
+            : 'rgba(255,255,255,0.88)',
         }}
       >
         {/* Header row */}
         <div className="flex items-center gap-3 p-4">
-          <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 shadow-sm">
+          <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 shadow-sm bg-white dark:bg-neutral-800">
             <img src="/icons/icon.svg" alt="MyPiggyBank" width={40} height={40} />
           </div>
 
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-bold leading-tight">Better as an app</p>
-            <p className="text-xs text-warmgray dark:text-neutral-400 leading-snug mt-0.5">
+            <p className="text-sm font-bold leading-tight text-charcoal dark:text-white">Better as an app</p>
+            <p className="text-xs text-warmgray dark:text-neutral-300 leading-snug mt-0.5">
               Full-screen, works offline, no browser bar.
             </p>
           </div>
@@ -202,7 +208,7 @@ export default function InstallPrompt() {
           <button
             onClick={dismiss}
             className="flex-shrink-0 p-1.5 -mr-1 -mt-1 rounded-full
-              text-warmgray dark:text-neutral-500
+              text-warmgray dark:text-neutral-400 hover:text-charcoal dark:hover:text-white
               hover:bg-black/5 dark:hover:bg-white/8
               active:opacity-60 transition-all duration-150"
             aria-label="Dismiss"
@@ -241,13 +247,13 @@ export default function InstallPrompt() {
 
             {expanded && (
               <div className="px-4 pb-4 space-y-2.5">
-                <p className="text-xs font-bold text-charcoal dark:text-neutral-200 mb-3">
+                <p className="text-xs font-bold text-charcoal dark:text-white mb-3">
                   {instructions.title}
                 </p>
                 {instructions.steps.map((step, i) => (
                   <div key={i} className="flex items-start gap-2.5">
                     <span className="text-base leading-none flex-shrink-0 mt-0.5">{step.icon}</span>
-                    <p className="text-xs text-charcoal dark:text-neutral-300 leading-snug">
+                    <p className="text-xs text-charcoal dark:text-neutral-200 leading-snug">
                       {step.text}
                     </p>
                   </div>
@@ -256,7 +262,7 @@ export default function InstallPrompt() {
             )}
           </>
         )}
-      </div>
+      </LiquidGlass>
     </div>
   );
 }

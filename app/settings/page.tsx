@@ -9,6 +9,7 @@ import { storage } from '@/lib/storage';
 import { useTheme } from '@/components/providers/ThemeProvider';
 import { CURRENCY_NAMES } from '@/lib/currency';
 import type { Settings } from '@/lib/types';
+import LiquidGlassSwitch from '@/components/LiquidGlassSwitch';
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -90,21 +91,10 @@ export default function SettingsPage() {
             Appearance
           </h2>
           <div className="glass rounded-3xl overflow-hidden">
-            <button
-              onClick={toggle}
-              className="w-full h-14 px-4 flex items-center justify-between
-                active:bg-black/5 dark:active:bg-white/5 transition-colors duration-150"
-            >
+            <div className="w-full h-14 px-4 flex items-center justify-between">
               <span className="text-sm font-medium">Dark mode</span>
-              {/* Toggle pill */}
-              <div className={`w-12 h-6 rounded-full transition-colors duration-200 relative
-                ${theme === 'dark' ? 'bg-burgundy' : 'bg-black/15 dark:bg-white/20'}`}>
-                <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm
-                  transition-transform duration-200
-                  ${theme === 'dark' ? 'translate-x-6' : 'translate-x-0.5'}`}
-                />
-              </div>
-            </button>
+              <LiquidGlassSwitch checked={theme === 'dark'} onChange={toggle} />
+            </div>
           </div>
         </section>
 
