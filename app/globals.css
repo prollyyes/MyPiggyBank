@@ -32,10 +32,7 @@
 }
 
 /* ── Viewport lock — kills iOS rubber-band overscroll ── */
-html {
-  height: 100%;
-  overflow: hidden;
-}
+html { height: 100%; overflow: hidden; }
 
 body {
   position: fixed;
@@ -47,7 +44,6 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
-/* The actual scroll container lives in layout.tsx (#scroll-root) */
 #scroll-root {
   height: 100dvh;
   overflow-y: auto;
@@ -117,21 +113,40 @@ body {
     transparent 70%);
 }
 
-.dark .app-background-base {
-  background: #0E0B09;
-}
+.dark .app-background-base { background: #0E0B09; }
 
-/* ── Glass utilities ────────────────────────────────────────
-   .glass        — base frosted layer (small elements, pills, inputs)
-   .glass-strong — full liquid glass (BottomNav, PageHeader, sheets)
-   Both upgraded with specular rim + refraction sweep (::before)
-   using isolation + z-index:-1 so children always paint above.
-──────────────────────────────────────────────────────────── */
+/* ── Glass utilities ──────────────────────────────────────────────────────
+   Tinted liquid glass using MULTI-LAYER CSS backgrounds.
+   No ::before tricks — backdrop-filter creates its own stacking context,
+   which makes z-index:-1 on pseudo-elements render behind the blur (invisible).
+   Instead every visual layer is encoded directly in background layers:
+     1. Specular diagonal highlight sweep (white gradient, top-left corner)
+     2. Tinted color — light mode: deep blue-slate (complementary of copper
+        on the color wheel, hue ~205°); dark mode: warm light cream-gray
+     3. Base frosted fill
+
+   .glass        — cards, pills, inputs (softer blur, subtler tint)
+   .glass-strong — BottomNav, PageHeader, bottom sheets (full liquid glass)
+──────────────────────────────────────────────────────────────────────── */
 
 .glass {
-  position: relative;
-  isolation: isolate;
-  background: rgba(255, 255, 255, 0.14);
+  background:
+    /* Specular diagonal sweep */
+    linear-gradient(
+      130deg,
+      rgba(255, 255, 255, 0.28) 0%,
+      rgba(255, 255, 255, 0.08) 30%,
+      transparent 55%
+    ),
+    /* Tinted layer — deep blue-slate (complementary to copper) */
+    linear-gradient(
+      150deg,
+      rgba(18, 52, 80, 0.11) 0%,
+      transparent 62%
+    ),
+    /* Base frosted fill */
+    rgba(255, 255, 255, 0.11);
+
   backdrop-filter: blur(32px) saturate(200%) brightness(106%);
   -webkit-backdrop-filter: blur(32px) saturate(200%) brightness(106%);
   border: 1px solid rgba(255, 255, 255, 0.30);
@@ -140,109 +155,99 @@ body {
     0 1px 4px rgba(0, 0, 0, 0.04),
     inset 0 1.5px 0 rgba(255, 255, 255, 0.62),
     inset 0 -1px 0 rgba(0, 0, 0, 0.05),
-    0 2px 16px rgba(138, 72, 38, 0.06);
-}
-
-.glass::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.22) 0%,
-    rgba(255, 255, 255, 0.07) 35%,
-    transparent 60%
-  );
-  pointer-events: none;
-  z-index: -1;
+    0 2px 16px rgba(138, 72, 38, 0.05);
 }
 
 .dark .glass {
-  background: rgba(18, 12, 8, 0.50);
+  background:
+    /* Subtle specular */
+    linear-gradient(
+      130deg,
+      rgba(255, 255, 255, 0.07) 0%,
+      rgba(255, 255, 255, 0.02) 30%,
+      transparent 55%
+    ),
+    /* Warm light cream-gray tint */
+    linear-gradient(
+      150deg,
+      rgba(215, 200, 190, 0.08) 0%,
+      transparent 62%
+    ),
+    /* Dark base */
+    rgba(16, 10, 6, 0.52);
+
+  backdrop-filter: blur(32px) saturate(170%) brightness(92%);
+  -webkit-backdrop-filter: blur(32px) saturate(170%) brightness(92%);
   border-color: rgba(255, 255, 255, 0.09);
   box-shadow:
     0 4px 24px rgba(0, 0, 0, 0.40),
     0 1px 4px rgba(0, 0, 0, 0.25),
     inset 0 1.5px 0 rgba(255, 255, 255, 0.10),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.28),
-    0 2px 16px rgba(204, 92, 68, 0.05);
-  backdrop-filter: blur(32px) saturate(170%) brightness(92%);
-  -webkit-backdrop-filter: blur(32px) saturate(170%) brightness(92%);
-}
-
-.dark .glass::before {
-  background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.06) 0%,
-    rgba(255, 255, 255, 0.02) 35%,
-    transparent 60%
-  );
+    inset 0 -1px 0 rgba(0, 0, 0, 0.28);
 }
 
 /* ── Full liquid glass — BottomNav, PageHeader, sheets ── */
 
 .glass-strong {
-  position: relative;
-  isolation: isolate;
-  background: rgba(255, 255, 255, 0.52);
+  background:
+    /* Strong specular sweep */
+    linear-gradient(
+      130deg,
+      rgba(255, 255, 255, 0.44) 0%,
+      rgba(255, 255, 255, 0.16) 28%,
+      transparent 52%,
+      rgba(255, 255, 255, 0.05) 100%
+    ),
+    /* Deep blue-slate tint — complementary to copper */
+    linear-gradient(
+      150deg,
+      rgba(18, 52, 80, 0.13) 0%,
+      transparent 58%
+    ),
+    /* Light frosted base */
+    rgba(255, 255, 255, 0.46);
+
   backdrop-filter: blur(52px) saturate(230%) brightness(110%);
   -webkit-backdrop-filter: blur(52px) saturate(230%) brightness(110%);
-  border: 1.5px solid rgba(255, 255, 255, 0.42);
+  border: 1.5px solid rgba(255, 255, 255, 0.44);
   box-shadow:
-    /* Outer ambient glow picks up copper blob */
     0 0 0 1px rgba(255, 255, 255, 0.06),
     0 8px 48px rgba(0, 0, 0, 0.10),
     0 2px 8px rgba(0, 0, 0, 0.06),
-    /* Strong specular top rim */
-    inset 0 2.5px 0 rgba(255, 255, 255, 0.82),
-    /* Depth shadow bottom */
-    inset 0 -1.5px 0 rgba(0, 0, 0, 0.08),
-    /* Left rim specular */
-    inset 1.5px 0 0 rgba(255, 255, 255, 0.28),
-    /* Warm copper ambient glow */
-    0 4px 32px rgba(138, 72, 38, 0.08);
-}
-
-/* Refraction / specular sweep — diagonal highlight */
-.glass-strong::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(
-    130deg,
-    rgba(255, 255, 255, 0.36) 0%,
-    rgba(255, 255, 255, 0.14) 28%,
-    transparent 52%,
-    rgba(255, 255, 255, 0.06) 100%
-  );
-  pointer-events: none;
-  z-index: -1;
+    inset 0 2.5px 0 rgba(255, 255, 255, 0.84),
+    inset 0 -1.5px 0 rgba(0, 0, 0, 0.07),
+    inset 1.5px 0 0 rgba(255, 255, 255, 0.30),
+    0 4px 32px rgba(138, 72, 38, 0.07);
 }
 
 .dark .glass-strong {
-  background: rgba(14, 9, 5, 0.60);
+  background:
+    /* Subtle specular */
+    linear-gradient(
+      130deg,
+      rgba(255, 255, 255, 0.10) 0%,
+      rgba(255, 255, 255, 0.04) 30%,
+      transparent 55%
+    ),
+    /* Warm light cream-gray tint */
+    linear-gradient(
+      150deg,
+      rgba(215, 200, 190, 0.10) 0%,
+      transparent 58%
+    ),
+    /* Deep dark base */
+    rgba(14, 9, 5, 0.60);
+
+  backdrop-filter: blur(52px) saturate(190%) brightness(90%);
+  -webkit-backdrop-filter: blur(52px) saturate(190%) brightness(90%);
   border-color: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(52px) saturate(190%) brightness(92%);
-  -webkit-backdrop-filter: blur(52px) saturate(190%) brightness(92%);
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.04),
     0 8px 48px rgba(0, 0, 0, 0.52),
     0 2px 8px rgba(0, 0, 0, 0.36),
     inset 0 1.5px 0 rgba(255, 255, 255, 0.14),
     inset 0 -1.5px 0 rgba(0, 0, 0, 0.34),
-    inset 1.5px 0 0 rgba(255, 255, 255, 0.07),
-    0 4px 32px rgba(204, 92, 68, 0.06);
-}
-
-.dark .glass-strong::before {
-  background: linear-gradient(
-    130deg,
-    rgba(255, 255, 255, 0.09) 0%,
-    rgba(255, 255, 255, 0.04) 30%,
-    transparent 55%
-  );
+    inset 1.5px 0 0 rgba(255, 255, 255, 0.07);
 }
 
 /* ── Progress bar ─────────────────────── */
@@ -255,7 +260,7 @@ body {
   animation: progressExpand 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* ── Page enter — opacity only (transform breaks position:fixed BottomNav) ── */
+/* ── Page enter — opacity only (transform on ancestor breaks position:fixed BottomNav) ── */
 
 @keyframes pageEnter {
   from { opacity: 0; }
@@ -265,13 +270,10 @@ body {
   animation: pageEnter 0.28s ease both;
 }
 
-/* ── Cards enter — safe to use transform (no fixed children) ── */
+/* ── Card enter — safe to transform (no fixed children) ── */
 
 @keyframes cardEnter {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
+  from { opacity: 0; transform: translateY(10px); }
 }
 
 .card-enter {
@@ -283,14 +285,15 @@ body {
 @keyframes slideDown {
   from {
     opacity: 0;
-    transform: translateX(-50%) translateY(-16px);
+    transform: translateX(-50%) translateY(-18px);
   }
   to {
+    opacity: 1;
     transform: translateX(-50%) translateY(0);
   }
 }
 
-/* ── Bottom sheet slide-up ────────────── */
+/* ── Bottom sheet slide-up ── */
 
 @keyframes slideUp {
   from { transform: translateY(100%); }
@@ -300,7 +303,7 @@ body {
   animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* ── Bottom nav padding ───────────────── */
+/* ── Bottom nav padding ── */
 
 .pb-nav {
   padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));

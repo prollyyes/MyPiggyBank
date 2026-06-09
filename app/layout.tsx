@@ -40,8 +40,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             if (s.theme === 'dark') document.documentElement.classList.add('dark');
           } catch(e) {}
         `}} />
-        {/* Register service worker */}
+        {/* Capture beforeinstallprompt early — before React hydrates */}
         <script dangerouslySetInnerHTML={{ __html: `
+          window.__installPrompt = null;
+          window.addEventListener('beforeinstallprompt', function(e) {
+            e.preventDefault();
+            window.__installPrompt = e;
+          });
           if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
               navigator.serviceWorker.register('/sw.js').catch(function() {});

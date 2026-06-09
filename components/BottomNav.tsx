@@ -17,8 +17,8 @@ export default function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50"
-      style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+      className="fixed left-1/2 -translate-x-1/2 z-50"
+      style={{ bottom: 'calc(1.25rem + env(safe-area-inset-bottom, 0px))' }}
     >
       <div className="glass-strong flex items-center gap-1 px-3 py-2 rounded-full shadow-2xl shadow-black/20">
         {TABS.map((tab, i) => {

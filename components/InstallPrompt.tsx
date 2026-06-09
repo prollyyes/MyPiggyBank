@@ -1,37 +1,151 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { X, Share } from 'lucide-react';
+import { X } from 'lucide-react';
 
 const DISMISSED_KEY = 'mpb.install-dismissed';
 
+type BrowserInfo = {
+  os: 'ios' | 'android' | 'other';
+  browser: 'safari' | 'chrome' | 'samsung' | 'firefox' | 'edge' | 'other';
+  isStandalone: boolean;
+};
+
+function detectBrowser(): BrowserInfo {
+  const ua = navigator.userAgent;
+  const isStandalone =
+    window.matchMedia('(display-mode: standalone)').matches ||
+    (navigator as any).standalone === true;
+
+  const isIOS = /iphone|ipad|ipod/i.test(ua);
+  const isAndroid = /android/i.test(ua);
+
+  let browser: BrowserInfo['browser'] = 'other';
+  if (/SamsungBrowser/i.test(ua)) browser = 'samsung';
+  else if (/Edg\//i.test(ua)) browser = 'edge';
+  else if (/Firefox/i.test(ua)) browser = 'firefox';
+  else if (/Chrome|CriOS/i.test(ua)) browser = 'chrome';
+  else if (/Safari/i.test(ua)) browser = 'safari';
+
+  return {
+    os: isIOS ? 'ios' : isAndroid ? 'android' : 'other',
+    browser,
+    isStandalone,
+  };
+}
+
+type Step = { icon: string; text: React.ReactNode };
+
+function getInstructions(info: BrowserInfo): { title: string; steps: Step[] } | null {
+  if (info.os === 'ios') {
+    if (info.browser === 'chrome') {
+      return {
+        title: 'Install on your iPhone',
+        steps: [
+          { icon: '⚠️', text: <>Chrome on iOS doesn&apos;t support direct install. <strong>Open this page in Safari</strong> for the best experience.</> },
+          { icon: '📋', text: <>Copy this URL: <strong>mypiggybank.online</strong></> },
+          { icon: '🧭', text: <>Paste it in <strong>Safari</strong> and follow the steps below.</> },
+        ],
+      };
+    }
+    if (info.browser === 'firefox') {
+      return {
+        title: 'Install on your iPhone',
+        steps: [
+          { icon: '⚠️', text: <>Firefox on iOS doesn&apos;t support app install. <strong>Open this page in Safari</strong>.</> },
+        ],
+      };
+    }
+    // Safari (default iOS)
+    return {
+      title: 'Install on your iPhone',
+      steps: [
+        { icon: '⬆️', text: <>Tap the <strong>Share</strong> button at the bottom of Safari (the square with an arrow pointing up).</> },
+        { icon: '📲', text: <>Scroll down and tap <strong>&ldquo;Add to Home Screen&rdquo;</strong>.</> },
+        { icon: '✅', text: <>Tap <strong>Add</strong> — MyPiggyBank will appear on your home screen like a native app.</> },
+      ],
+    };
+  }
+
+  if (info.os === 'android') {
+    if (info.browser === 'samsung') {
+      return {
+        title: 'Install on your phone',
+        steps: [
+          { icon: '☰', text: <>Tap the <strong>menu icon</strong> (three horizontal lines) at the bottom of the screen.</> },
+          { icon: '➕', text: <>Tap <strong>&ldquo;Add page to&rdquo;</strong>, then <strong>&ldquo;Home screen&rdquo;</strong>.</> },
+          { icon: '✅', text: <>Tap <strong>Add</strong> to confirm.</> },
+        ],
+      };
+    }
+    if (info.browser === 'firefox') {
+      return {
+        title: 'Install on your phone',
+        steps: [
+          { icon: '⋮', text: <>Tap the <strong>three dots</strong> menu in the top-right corner.</> },
+          { icon: '📲', text: <>Tap <strong>&ldquo;Install&rdquo;</strong> or <strong>&ldquo;Add to Home screen&rdquo;</strong>.</> },
+          { icon: '✅', text: <>Tap <strong>Add</strong> to confirm.</> },
+        ],
+      };
+    }
+    if (info.browser === 'edge') {
+      return {
+        title: 'Install on your phone',
+        steps: [
+          { icon: '⋮', text: <>Tap the <strong>three dots</strong> menu at the bottom of the screen.</> },
+          { icon: '📲', text: <>Tap <strong>&ldquo;Add to phone&rdquo;</strong>.</> },
+          { icon: '✅', text: <>Tap <strong>Install</strong> to confirm.</> },
+        ],
+      };
+    }
+    // Chrome (default Android) — uses beforeinstallprompt, button handled inline
+    return {
+      title: 'Install on your phone',
+      steps: [
+        { icon: '⋮', text: <>Or tap the <strong>three dots</strong> menu in the top-right corner of Chrome.</> },
+        { icon: '📲', text: <>Tap <strong>&ldquo;Add to Home screen&rdquo;</strong> or <strong>&ldquo;Install app&rdquo;</strong>.</> },
+        { icon: '✅', text: <>Tap <strong>Install</strong> to confirm.</> },
+      ],
+    };
+  }
+
+  return null;
+}
+
 export default function InstallPrompt() {
-  const [show, setShow]           = useState(false);
-  const [isIOS, setIsIOS]         = useState(false);
+  const [info, setInfo]               = useState<BrowserInfo | null>(null);
+  const [show, setShow]               = useState(false);
+  const [expanded, setExpanded]       = useState(false);
   const [deferredPrompt, setDeferred] = useState<any>(null);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
     if (localStorage.getItem(DISMISSED_KEY)) return;
-    // Already running as installed PWA
-    if (window.matchMedia('(display-mode: standalone)').matches) return;
-    if ((window.navigator as any).standalone === true) return;
 
-    const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
-    setIsIOS(ios);
+    const detected = detectBrowser();
+    if (detected.isStandalone) return;
+    setInfo(detected);
 
-    if (ios) {
-      // Small delay so it doesn't flash on first load
-      const t = setTimeout(() => setShow(true), 1800);
-      return () => clearTimeout(t);
+    // Read the prompt captured early in <head> before React hydrated
+    if ((window as any).__installPrompt) {
+      setDeferred((window as any).__installPrompt);
+      setTimeout(() => setShow(true), 1600);
+      return;
     }
 
+    // Listen for future fires (shouldn't be needed but keeps it robust)
     const handler = (e: Event) => {
       e.preventDefault();
       setDeferred(e);
-      setTimeout(() => setShow(true), 1800);
+      setShow(true);
     };
     window.addEventListener('beforeinstallprompt', handler);
+
+    // iOS and other browsers: always show the banner
+    if (detected.os === 'ios' || detected.os === 'android') {
+      const t = setTimeout(() => setShow(true), 1600);
+      return () => { clearTimeout(t); window.removeEventListener('beforeinstallprompt', handler); };
+    }
+
     return () => window.removeEventListener('beforeinstallprompt', handler);
   }, []);
 
@@ -40,61 +154,99 @@ export default function InstallPrompt() {
     setShow(false);
   }
 
-  async function install() {
+  async function nativeInstall() {
     if (!deferredPrompt) return;
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
     if (outcome === 'accepted') dismiss();
   }
 
-  if (!show) return null;
+  if (!show || !info) return null;
+
+  const instructions = getInstructions(info);
+  const canNativeInstall = !!deferredPrompt && info.os === 'android' && info.browser === 'chrome';
 
   return (
     <div
-      className="fixed top-4 left-1/2 -translate-x-1/2 z-[200]
-        w-[calc(100%-2rem)] max-w-sm
-        animate-[slideDown_0.4s_cubic-bezier(0.16,1,0.3,1)_both]"
+      className="fixed left-1/2 z-[200] w-[calc(100%-2rem)] max-w-sm"
+      style={{
+        top: 'max(16px, env(safe-area-inset-top, 16px))',
+        animation: 'slideDown 0.4s cubic-bezier(0.16,1,0.3,1) both',
+      }}
       role="banner"
       aria-label="Install app"
     >
-      <div className="glass-strong rounded-3xl p-4 flex items-start gap-3">
-        {/* Icon */}
-        <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 shadow-sm">
-          <img src="/icons/icon.svg" alt="MyPiggyBank" width={40} height={40} />
+      <div className="glass-strong rounded-3xl overflow-hidden shadow-2xl shadow-black/20">
+        {/* Header row */}
+        <div className="flex items-center gap-3 p-4">
+          <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 shadow-sm">
+            <img src="/icons/icon.svg" alt="MyPiggyBank" width={40} height={40} />
+          </div>
+
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-bold leading-tight">Better as an app</p>
+            <p className="text-xs text-warmgray dark:text-neutral-400 leading-snug mt-0.5">
+              Full-screen, works offline, no browser bar.
+            </p>
+          </div>
+
+          <button
+            onClick={dismiss}
+            className="flex-shrink-0 p-1.5 -mr-1 -mt-1 rounded-full
+              text-warmgray dark:text-neutral-500
+              hover:bg-black/5 dark:hover:bg-white/8
+              active:opacity-60 transition-all duration-150"
+            aria-label="Dismiss"
+          >
+            <X size={15} strokeWidth={2.5} />
+          </button>
         </div>
 
-        {/* Text */}
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold leading-tight mb-0.5">
-            Better as an app
-          </p>
-          <p className="text-xs text-warmgray dark:text-neutral-400 leading-snug">
-            {isIOS
-              ? <>Tap <Share size={11} className="inline mb-0.5" strokeWidth={2} /> then <strong>"Add to Home Screen"</strong> for a full-screen experience.</>
-              : 'Install MyPiggyBank for a faster, full-screen experience with no browser bar.'}
-          </p>
-          {!isIOS && deferredPrompt && (
+        {/* Install button for Android Chrome */}
+        {canNativeInstall && (
+          <div className="px-4 pb-4">
             <button
-              onClick={install}
-              className="mt-2 text-xs font-bold text-burgundy dark:text-blush
+              onClick={nativeInstall}
+              className="w-full h-11 rounded-full bg-burgundy text-white text-sm font-bold
+                active:scale-[0.97] transition-transform shadow-lg shadow-burgundy/30"
+            >
+              Install MyPiggyBank
+            </button>
+          </div>
+        )}
+
+        {/* Step-by-step instructions toggle */}
+        {instructions && (
+          <>
+            <button
+              onClick={() => setExpanded(v => !v)}
+              className="w-full px-4 pb-3 flex items-center justify-between
+                text-xs font-semibold text-burgundy dark:text-blush
                 active:opacity-60 transition-opacity duration-150"
             >
-              Install now →
+              <span>{expanded ? 'Hide instructions' : 'How to install'}</span>
+              <span className={`transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`}>
+                ▾
+              </span>
             </button>
-          )}
-        </div>
 
-        {/* Dismiss */}
-        <button
-          onClick={dismiss}
-          className="flex-shrink-0 -mt-0.5 -mr-0.5 p-1.5 rounded-full
-            text-warmgray dark:text-neutral-500
-            hover:bg-black/5 dark:hover:bg-white/8
-            active:opacity-60 transition-all duration-150"
-          aria-label="Dismiss"
-        >
-          <X size={15} strokeWidth={2.5} />
-        </button>
+            {expanded && (
+              <div className="px-4 pb-4 space-y-2.5">
+                <p className="text-xs font-bold text-charcoal dark:text-neutral-200 mb-3">
+                  {instructions.title}
+                </p>
+                {instructions.steps.map((step, i) => (
+                  <div key={i} className="flex items-start gap-2.5">
+                    <span className="text-base leading-none flex-shrink-0 mt-0.5">{step.icon}</span>
+                    <p className="text-xs text-charcoal dark:text-neutral-300 leading-snug">
+                      {step.text}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

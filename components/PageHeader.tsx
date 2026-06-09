@@ -16,7 +16,10 @@ export default function PageHeader({ title, back, right, showThemeToggle }: Prop
   const { theme, toggle } = useTheme();
 
   return (
-    <header className="sticky top-0 z-40 pt-12 pb-3 px-4">
+    <header
+      className="sticky top-0 z-40 pb-3 px-4"
+      style={{ paddingTop: 'max(12px, env(safe-area-inset-top, 12px))' }}
+    >
       <div className="glass-strong rounded-full flex items-center justify-between h-12 px-4 shadow-sm">
         {back ? (
           <button
